@@ -1,0 +1,7 @@
+
+*.ps1secret
+*.local.json
+
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,65 @@
+# .github/workflows/deploy.yml
+name: Enterprise Cloud-Native IaC Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# ============================================================================
+# --- SECURITY CONTEXT (Zero-Trust OIDC Federation) ---
+# ============================================================================
+permissions:
+  id-token: write 
+  contents: read  
+
+jobs:
+  provision-infrastructure:
+    name: Bicep CI/CD & State Orchestration
+    runs-on: ubuntu-latest
+
+    env:
+      # Subscription-level metadata for ARM deployments
+      AZURE_LOCATION: 'polandcentral' 
+      DEPLOYMENT_NAME: 'hub-spoke-deploy-${{ github.run_number }}'
+
+    steps:
+      # --- PHASE 1: WORKSPACE PREPARATION ---
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # --- PHASE 2: PASSWORDLESS AUTHENTICATION ---
+      - name: Azure Entra ID Authentication (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # --- PHASE 3: CONTINUOUS INTEGRATION (CI) ---
+      - name: CI - Static Code Analysis & Linting (Bicep)
+        run: |
+          echo "Executing Bicep linting..."
+          az bicep build --file ./main.bicep
+
+      - name: CI - State Simulation (ARM What-If Analysis)
+        run: |
+          echo "Executing ARM What-If simulation against target subscription..."
+          az deployment sub what-if \
+            --name "${{ env.DEPLOYMENT_NAME }}-whatif" \
+            --location "${{ env.AZURE_LOCATION }}" \
+            --template-file ./main.bicep \
+            --parameters parameters.json \
+            --parameters vmPassword="${{ secrets.VM_PASSWORD }}"
+
+      # --- PHASE 4: CONTINUOUS DELIVERY (CD) ---
+      - name: CD - Infrastructure Provisioning
+        run: |
+          echo "Initiating declarative state deployment to Azure..."
+          az deployment sub create \
+            --name "${{ env.DEPLOYMENT_NAME }}" \
+            --location "${{ env.AZURE_LOCATION }}" \
+            --template-file ./main.bicep \
+            --parameters parameters.json \
+            --parameters vmPassword="${{ secrets.VM_PASSWORD }}"
