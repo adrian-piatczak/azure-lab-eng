@@ -39,6 +39,22 @@ resource ruleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionG
           }
         ]
       }
+        {
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        name: 'Network-Rules'
+        priority: 200
+        action: { type: 'Allow' }
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'Allow-SQL-Spoke1-to-Spoke2'
+            ipProtocols: [ 'TCP' ]
+            sourceAddresses: [ '10.1.0.0/16' ]
+            destinationAddresses: [ '10.2.1.4' ]
+            destinationPorts: [ '1433' ]
+          }
+        ]
+      }
       // --- B. APPLICATION RULES (L7 Egress FQDN Filtering) ---
       {
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
