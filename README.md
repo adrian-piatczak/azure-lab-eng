@@ -43,14 +43,14 @@ The infrastructure is fully modularized using Azure Bicep and implements a highl
 To fully align with the **Microsoft Certified: Azure Administrator Associate (AZ-104)** enterprise standards and expand the architectural capabilities, the following enhancements are planned for the next development phases:
 
 ### 1. Hybrid Connectivity & On-Premise Integration
-* **Virtual Network Gateway:** Deploy an Azure VPN Gateway (Site-to-Site / Point-to-Site) or ExpressRoute within the Hub network's `GatewaySubnet` to establish a secure, encrypted tunnel to the on-premise datacenter[cite: 1].
-* **BGP Routing:** Implement Border Gateway Protocol (BGP) over the VPN/ExpressRoute for dynamic and stable route propagation between the cloud and on-premise environment[cite: 1].
+* **Virtual Network Gateway:** Deploy an Azure VPN Gateway (Site-to-Site / Point-to-Site) or ExpressRoute within the Hub network's `GatewaySubnet` to establish a secure, encrypted tunnel to the on-premise datacenter.
+* **BGP Routing:** Implement Border Gateway Protocol (BGP) over the VPN/ExpressRoute for dynamic and stable route propagation between the cloud and on-premise environment.
 * **Azure File Sync:** Deploy an on-premise Windows Server acting as a rapid cache for Azure Files, utilizing Cloud Tiering to reduce local storage costs while retaining 100% of the data centrally in Azure.
 
 ### 2. Advanced Storage & Disaster Recovery
 * **Azure Storage Accounts:** Provision dedicated storage accounts for different workloads to prevent IOPS throttling and enforce strict data redundancy (e.g., ZRS/GRS).
 * **Blob vs. File Shares:** Implement Azure Blob Storage with flat namespaces for unstructured, cloud-native application data, and Azure Files (SMB) for legacy lift-and-shift workloads.
-* **Enterprise Backup Solutions:** Integrate **Azure Backup** (Recovery Services Vault) for scheduled VMSS and Database snapshots, ensuring point-in-time restore (PITR) capabilities[cite: 3].
+* **Enterprise Backup Solutions:** Integrate **Azure Backup** (Recovery Services Vault) for scheduled VMSS and Database snapshots, ensuring point-in-time restore (PITR) capabilities.
 * **Soft Delete & Snapshots:** Enforce Storage Account-level Soft Delete (with a 14-day retention limit for cost optimization) and automated incremental file share snapshots for robust ransomware protection.
 
 ### 3. Identity, Security & RBAC (Microsoft Entra ID)
@@ -60,8 +60,8 @@ To fully align with the **Microsoft Certified: Azure Administrator Associate (AZ
 ### 4. Advanced Traffic Management & Observability
 * **Layer 7 Load Balancing:** Upgrade the ingress architecture with **Azure Application Gateway** (WAF v2 SKU) to handle SSL/TLS termination (offloading), URL path-based routing, and Cookie-based Session Affinity.
 * **Global Load Balancing:** Evaluate **Azure Front Door** or **Traffic Manager** for multi-region disaster recovery and global DNS-based routing.
-* **Telemetry & Diagnostics:** Integrate **Azure Monitor**, **Application Insights**, and **Log Analytics Workspaces** to build KQL-driven dashboards mapping application dependencies and diagnosing HTTP 500 errors in real time[cite: 3].
+* **Telemetry & Diagnostics:** Integrate **Azure Monitor**, **Application Insights**, and **Log Analytics Workspaces** to build KQL-driven dashboards mapping application dependencies and diagnosing HTTP 500 errors in real time.
 
 ### 5. Cloud-Native Container Orchestration
-* **Serverless Containers:** Migrate background jobs to isolated **Azure Container Instances (ACI)** groups, and transition event-driven microservices to **Azure Container Apps (ACA)** leveraging KEDA for Scale-to-Zero cost optimization[cite: 2].
-* **Azure Kubernetes Service (AKS):** The ultimate evolution of the stateless compute tier, replacing raw VMSS nodes with a fully managed Kubernetes cluster for complex, long-running orchestration[cite: 2].
+* **Serverless Containers:** Migrate background jobs to isolated **Azure Container Instances (ACI)** groups, and transition event-driven microservices to **Azure Container Apps (ACA)** leveraging KEDA for Scale-to-Zero cost optimization.
+* **Azure Kubernetes Service (AKS):** The ultimate evolution of the stateless compute tier, replacing raw VMSS nodes with a fully managed Kubernetes cluster for complex, long-running orchestration.
